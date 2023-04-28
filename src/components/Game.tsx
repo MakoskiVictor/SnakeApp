@@ -22,7 +22,10 @@ export function Game (): JSX.Element {
 
   useEffect(() => {
     if (!isGameOver) {
-      // nada
+      const intervalID = setInterval(() => {
+        moveSnake()
+      }, MOVE_INTERVAL)
+      return (): void => { clearInterval(intervalID) } // REVISAR SI VAN LAS LLAVES
     }
   }, [isGameOver])
 
@@ -49,7 +52,7 @@ export function Game (): JSX.Element {
     }
 
     // Check if eats food
-    setSnake([newHead, ...snake.slice(0, -1)])
+    setSnake([newHead, ...snake.slice(0, -1)]) // move snake
   }
 
   const handleGesture = (e: GestureEventType): void => {
@@ -77,7 +80,6 @@ export function Game (): JSX.Element {
               {/* <Header /> */}
               <View style={styles.boundaries}>
                 <View style={styles.snake} />
-                {/* <View style={styles.snake} /> */}
               </View>
             </SafeAreaView>
         </PanGestureHandler>
