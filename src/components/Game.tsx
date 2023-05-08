@@ -5,6 +5,9 @@ import { SafeAreaView, View, StyleSheet } from 'react-native'
 import { Colors } from '../styles/colors'
 import { Header } from './Header'
 import { type Coordenate, Direction, type GestureEventType } from '../types/types'
+import { Snake } from './Snake'
+import { checkGameOver } from '../utils/checkGameOver'
+import Food from './Food'
 
 const SNAKE_INITIAL_POSITION = [{ x: 5, y: 5 }]
 const FOOD_INITIAL_POSITION = { x: 5, y: 20 }
@@ -27,19 +30,24 @@ export function Game (): JSX.Element {
       }, MOVE_INTERVAL)
       return (): void => { clearInterval(intervalID) } // REVISAR SI VAN LAS LLAVES
     }
-  }, [isGameOver])
+  }, [isGameOver, snake])
 
   const moveSnake = (): void => {
     const snakeHead = snake[0]
     const newHead = { ...snakeHead }
 
     // Game is Over
+    if (checkGameOver(snakeHead, GAME_BOUNDS)) {
+      setIsGameOver((prev) => !prev)
+      return
+    }
+
     switch (direction) {
       case Direction.Up:
         newHead.y -= 1
         break
       case Direction.Down:
-        newHead.y -= 1
+        newHead.y += 1
         break
       case Direction.Left:
         newHead.x -= 1
@@ -55,8 +63,8 @@ export function Game (): JSX.Element {
     setSnake([newHead, ...snake.slice(0, -1)]) // move snake
   }
 
-  const handleGesture = (e: GestureEventType): void => {
-    const { translationX, translationY } = e.nativeEvent
+  const handleGesture = (event: GestureEventType): void => {
+    const { translationX, translationY } = event.nativeEvent
 
     // Para medir si el movimiento es mayor hacia los costados o arriba/abajo
     if (Math.abs(translationX) > Math.abs(translationY)) {
@@ -66,6 +74,7 @@ export function Game (): JSX.Element {
       } else {
         setDirection(Direction.Left)
       }
+    } else {
       // Eje Y, ahora determina si es arriba o abajo
       if (translationY > 0) {
         setDirection(Direction.Down)
@@ -79,7 +88,8 @@ export function Game (): JSX.Element {
             <SafeAreaView style={ styles.container }>
               {/* <Header /> */}
               <View style={styles.boundaries}>
-                <View style={styles.snake} />
+               <Snake snake={snake}/>
+               <Food x={food.x} y={food.y} />
               </View>
             </SafeAreaView>
         </PanGestureHandler>
@@ -100,10 +110,5 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30
-  },
-  snake: {
-    width: 20,
-    height: 20,
-    backgroundColor: 'red'
   }
 })
