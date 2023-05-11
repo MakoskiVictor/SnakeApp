@@ -1,7 +1,9 @@
 {
   "expo": {
-    "name": "SnakeApp",
+    "name": "Snake App",
     "slug": "SnakeApp",
+    "privacy": "public",
+    "description": "An movile app to make a snake eat fruits",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,16 +17,23 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.makoski.SnakeApp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.makoski.SnakeApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0492af27-3af7-483b-b79a-21716e6e2f5e"
+      }
     }
   }
 }
